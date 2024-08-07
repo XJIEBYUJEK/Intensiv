@@ -13,9 +13,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import ru.androidschool.intensiv.BuildConfig
 import ru.androidschool.intensiv.R
-import ru.androidschool.intensiv.data.MockRepository
 import ru.androidschool.intensiv.data.Movie
-import ru.androidschool.intensiv.data.Movie_temp
 import ru.androidschool.intensiv.data.MoviesResponse
 import ru.androidschool.intensiv.databinding.FeedFragmentBinding
 import ru.androidschool.intensiv.databinding.FeedHeaderBinding
@@ -67,6 +65,8 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         }
 
         val getNowPlaying = MovieApiClient.apiClient.getNowPlaying(API_KEY, "en-US")
+        val getPopular = MovieApiClient.apiClient.getPopularMovies(API_KEY, "en-US")
+        val getUpcoming = MovieApiClient.apiClient.getUpcomingMovies(API_KEY, "en-US")
 
         getNowPlaying.enqueue(object : Callback<MoviesResponse> {
             override fun onResponse(
@@ -76,7 +76,11 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
                 val movies = response.body()?.results
                 binding.moviesRecyclerView.adapter = adapter.apply {
                     addAll(movies?.map {
-                        MovieItem(it) {}
+                        MovieItem(it) { movie ->
+                            openMovieDetails(
+                                movie
+                            )
+                        }
                     }?.toList() ?: listOf())
                 }
             }
@@ -84,25 +88,38 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
             override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
                 Timber.e(t.toString())
             }
-
         })
 
-        /*// Используя Мок-репозиторий получаем фэйковый список фильмов
-        val moviesList =
-                MockRepository.getMovies().map {
-                    MovieItem(it) { movie ->
-                        openMovieDetails(
-                            movie
-                        )
-                    }
-                }.toList()
+        getPopular.enqueue(object : Callback<MoviesResponse> {
+            override fun onResponse(
+                call: Call<MoviesResponse>,
+                response: Response<MoviesResponse>
+            ) {
+                Timber.i("Success")
+                //TODO
+            }
 
-        binding.moviesRecyclerView.adapter = adapter.apply { addAll(moviesList ?: listOf()) }
+            override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
+                Timber.e(t.toString())
+            }
+        })
 
-         */
+        getUpcoming.enqueue(object : Callback<MoviesResponse> {
+            override fun onResponse(
+                call: Call<MoviesResponse>,
+                response: Response<MoviesResponse>
+            ) {
+                Timber.i("Success")
+                //TODO
+            }
+
+            override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
+                Timber.e(t.toString())
+            }
+        })
     }
 
-    private fun openMovieDetails(movie: Movie_temp) {
+    private fun openMovieDetails(movie: Movie) {
         val bundle = Bundle()
         bundle.putString(KEY_TITLE, movie.title)
         findNavController().navigate(R.id.movie_details_fragment, bundle, options)

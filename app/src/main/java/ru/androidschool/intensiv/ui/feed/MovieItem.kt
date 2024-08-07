@@ -16,12 +16,11 @@ class MovieItem(
 
     override fun bind(view: ItemWithTextBinding, position: Int) {
         view.description.text = content.title
-        view.movieRating.rating = content.rating
+        view.movieRating.rating = content.rating ?: 0.0f
         view.content.setOnClickListener {
             onClick.invoke(content)
         }
 
-        // TODO Получать из модели
         Picasso.get()
             .load(content.posterPath)
             .into(view.imagePreview)
