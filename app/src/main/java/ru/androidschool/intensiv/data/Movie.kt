@@ -22,8 +22,6 @@ data class Movie(
     val overview: String,
     @SerialName("popularity")
     val popularity: Double,
-    @SerialName("poster_path")
-    val posterPath: String,
     @SerialName("release_date")
     val releaseDate: String,
     @SerialName("title")
@@ -37,4 +35,7 @@ data class Movie(
 ){
     val rating: Float
         get() = voteAverage.div(2).toFloat()
+    @SerialName("poster_path")
+    var posterPath: String? = null
+        get() = "https://image.tmdb.org/t/p/w500$field"
 }

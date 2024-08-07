@@ -134,6 +134,5 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         const val KEY_TITLE = "title"
         const val KEY_SEARCH = "search"
         private val API_KEY = BuildConfig.THE_MOVIE_DATABASE_API
-        private val API_TOKEN = BuildConfig.THE_MOVIE_DATABASE_API_READ_ACCESS
     }
 }
