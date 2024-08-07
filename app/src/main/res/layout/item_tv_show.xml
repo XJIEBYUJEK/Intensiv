@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:background="@color/blueDark"
+    android:background="@color/blueDark"
     tools:ignore="RtlHardcoded">
 
     <com.google.android.material.imageview.ShapeableImageView
