@@ -40,7 +40,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_size_large"
             tools:text="Мир дикого запада"
             tools:textColor="@color/white" />
 

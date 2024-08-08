@@ -3,17 +3,22 @@ package ru.androidschool.intensiv.data
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
 @Serializable
-data class Movie(
+data class MovieDetails(
     @SerialName("adult")
     val isAdult: Boolean?,
     @SerialName("backdrop_path")
     val backDropPath: String?,
-    @SerialName("genre_ids")
-    val genreIds: List<Int>?,
+/*    @SerialName("belongs_to_collection")
+    val belongsToCollection: String?,*/
+    @SerialName("budget")
+    val budget: Int?,
+    @SerialName("genres")
+    val genres: List<Genre>?,
+    @SerialName("homepage")
+    val homepage: String?,
     @SerialName("id")
-    val id: Int,
+    val id: Int?,
     @SerialName("original_language")
     val originalLanguage: String?,
     @SerialName("original_title")
@@ -22,8 +27,22 @@ data class Movie(
     val overview: String?,
     @SerialName("popularity")
     val popularity: Double?,
+    @SerialName("production_companies")
+    val companies: List<Company>?,
+    @SerialName("production_countries")
+    val countries: List<Country>?,
     @SerialName("release_date")
     val releaseDate: String?,
+    @SerialName("revenue")
+    val revenue: Int?,
+    @SerialName("runtime")
+    val runtime: Int?,
+    @SerialName("spoken_languages")
+    val languages: List<Language>?,
+    @SerialName("status")
+    val status: String?,
+    @SerialName("tagline")
+    val tagline: String?,
     @SerialName("title")
     val title: String,
     @SerialName("video")
@@ -32,6 +51,7 @@ data class Movie(
     val voteAverage: Double?,
     @SerialName("vote_count")
     val voteCount: Int?
+
 ){
     val rating: Float?
         get() = voteAverage?.div(2)?.toFloat()
@@ -39,3 +59,5 @@ data class Movie(
     var posterPath: String? = null
         get() = "https://image.tmdb.org/t/p/w500$field"
 }
+
+
