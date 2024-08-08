@@ -15,7 +15,7 @@ android {
         applicationId "ru.androidschool.intensiv"
         minSdkVersion 21
         targetSdkVersion 34
-        compileSdkVersion 34
+        compileSdk 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
