@@ -12,5 +12,5 @@ data class TvShowsResponse(
     @SerialName("total_results")
     var totalResults: Int,
     @SerialName("total_pages")
-    var totalPages: Int,
+    var totalPages: Int
 )

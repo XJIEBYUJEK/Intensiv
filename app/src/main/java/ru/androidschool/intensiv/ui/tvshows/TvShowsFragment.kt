@@ -65,7 +65,7 @@ class TvShowsFragment : Fragment(R.layout.tv_shows_fragment) {
         _binding = null
     }
 
-    companion object{
+    companion object {
         private val API_KEY = BuildConfig.THE_MOVIE_DATABASE_API
     }
 }

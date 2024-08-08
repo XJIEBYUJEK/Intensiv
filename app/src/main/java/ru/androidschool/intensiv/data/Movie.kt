@@ -3,7 +3,6 @@ package ru.androidschool.intensiv.data
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 data class Movie(
     @SerialName("adult")
@@ -32,7 +31,7 @@ data class Movie(
     val voteAverage: Double?,
     @SerialName("vote_count")
     val voteCount: Int?
-){
+) {
     val rating: Float?
         get() = voteAverage?.div(2)?.toFloat()
     @SerialName("poster_path")

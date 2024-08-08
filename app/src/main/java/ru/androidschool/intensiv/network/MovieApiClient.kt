@@ -22,7 +22,7 @@ object MovieApiClient {
 
         val contentType = "application/json".toMediaType()
 
-        val json = Json{
+        val json = Json {
             ignoreUnknownKeys = true
         }
 

@@ -1,7 +1,6 @@
 package ru.androidschool.intensiv.ui.feed
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -96,7 +95,7 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
                 response: Response<MoviesResponse>
             ) {
                 Timber.i("Success")
-                //TODO
+                // TODO
             }
 
             override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
@@ -110,7 +109,7 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
                 response: Response<MoviesResponse>
             ) {
                 Timber.i("Success")
-                //TODO
+                // TODO
             }
 
             override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {

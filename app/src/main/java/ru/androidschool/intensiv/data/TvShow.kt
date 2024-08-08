@@ -31,7 +31,7 @@ data class TvShow(
     val firstAirDate: String?,
     @SerialName("name")
     val name: String?
-){
+) {
     val rating: Float?
         get() = voteAverage?.div(2)?.toFloat()
     @SerialName("poster_path")

@@ -42,7 +42,7 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
         val getMovieDetails = MovieApiClient.apiClient.getMovieDetails(movieId, API_KEY, ENGLISH)
         val getMovieCredits = MovieApiClient.apiClient.getMovieCredits(movieId, API_KEY, ENGLISH)
 
-        getMovieDetails.enqueue(object : Callback<MovieDetails>{
+        getMovieDetails.enqueue(object : Callback<MovieDetails> {
             override fun onResponse(call: Call<MovieDetails>, response: Response<MovieDetails>) {
                 val movieDetails = response.body()
                 binding.movieTitle.text = movieDetails?.title
@@ -58,7 +58,7 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
             }
         })
 
-        getMovieCredits.enqueue(object : Callback<CreditsResponse>{
+        getMovieCredits.enqueue(object : Callback<CreditsResponse> {
             override fun onResponse(
                 call: Call<CreditsResponse>,
                 response: Response<CreditsResponse>
@@ -85,9 +85,7 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
             override fun onFailure(call: Call<CreditsResponse>, t: Throwable) {
                 Timber.e(t.toString())
             }
-
         })
-
     }
 
     override fun onDestroyView() {
@@ -102,4 +100,3 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
         const val ENGLISH = "en-US"
     }
 }
-

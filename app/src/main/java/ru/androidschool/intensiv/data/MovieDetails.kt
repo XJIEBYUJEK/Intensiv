@@ -52,12 +52,10 @@ data class MovieDetails(
     @SerialName("vote_count")
     val voteCount: Int?
 
-){
+) {
     val rating: Float?
         get() = voteAverage?.div(2)?.toFloat()
     @SerialName("poster_path")
     var posterPath: String? = null
         get() = "https://image.tmdb.org/t/p/w500$field"
 }
-
-

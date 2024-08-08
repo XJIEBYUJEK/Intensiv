@@ -28,7 +28,7 @@ data class Country(
     @SerialName("name")
     val name: String?,
     @SerialName("iso_3166_1")
-    val iso: String?,
+    val iso: String?
 )
 
 @Serializable

@@ -1,6 +1,5 @@
 package ru.androidschool.intensiv.data
 
-import android.content.pm.PackageInstaller.InstallConstraintsResult
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -18,7 +17,7 @@ data class Cast(
     val character: String?,
     @SerialName("order")
     val order: Int
-){
+) {
     @SerialName("profile_path")
     var profilePath: String? = null
         get() = "https://image.tmdb.org/t/p/w500$field"
