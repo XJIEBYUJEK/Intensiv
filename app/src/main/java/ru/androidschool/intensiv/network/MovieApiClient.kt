@@ -14,7 +14,7 @@ object MovieApiClient {
     private const val BASE_URL = BuildConfig.BASE_URL
 
     private val client: OkHttpClient = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor().apply {
+        .addInterceptor(HttpLoggingInterceptor().apply { //TODO if for build.realese
             this.level = HttpLoggingInterceptor.Level.BODY
         })
         .build()
