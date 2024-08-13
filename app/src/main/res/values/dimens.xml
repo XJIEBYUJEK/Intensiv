@@ -32,4 +32,6 @@
     <dimen name="text_size_large">18sp</dimen>
     <dimen name="text_size_extra_large">24sp</dimen>
 
+    <dimen name="header_size">400dp</dimen>
+
 </resources>

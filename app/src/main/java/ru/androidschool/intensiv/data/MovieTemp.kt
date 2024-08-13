@@ -1,6 +1,6 @@
 package ru.androidschool.intensiv.data
 
-class Movie_temp(
+class MovieTemp(
     var title: String? = "",
     var voteAverage: Double = 0.0
 ) {

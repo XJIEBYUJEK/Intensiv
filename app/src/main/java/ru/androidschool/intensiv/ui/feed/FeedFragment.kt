@@ -150,6 +150,6 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         const val KEY_ID = "id"
         const val KEY_SEARCH = "search"
         const val ENGLISH = "en-US"
-        private val API_KEY = BuildConfig.THE_MOVIE_DATABASE_API
+        private const val API_KEY = BuildConfig.THE_MOVIE_DATABASE_API
     }
 }

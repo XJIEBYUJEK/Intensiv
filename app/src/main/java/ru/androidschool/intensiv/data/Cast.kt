@@ -2,6 +2,7 @@ package ru.androidschool.intensiv.data
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import ru.androidschool.intensiv.BuildConfig
 
 @Serializable
 data class Cast(
@@ -20,5 +21,8 @@ data class Cast(
 ) {
     @SerialName("profile_path")
     var profilePath: String? = null
-        get() = "https://image.tmdb.org/t/p/w500$field"
+        get() = "${BuildConfig.IMAGE_URL}$SCALE$field"
+    companion object{
+        const val SCALE = "w500"
+    }
 }

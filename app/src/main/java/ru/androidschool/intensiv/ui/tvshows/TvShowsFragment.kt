@@ -39,7 +39,7 @@ class TvShowsFragment : Fragment(R.layout.tv_shows_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val getPopularTvShows = MovieApiClient.apiClient.getPopularTvShows(API_KEY, "en-US")
+        val getPopularTvShows = MovieApiClient.apiClient.getPopularTvShows(API_KEY)
 
         getPopularTvShows.enqueue(object : Callback<TvShowsResponse> {
             override fun onResponse(
@@ -66,6 +66,6 @@ class TvShowsFragment : Fragment(R.layout.tv_shows_fragment) {
     }
 
     companion object {
-        private val API_KEY = BuildConfig.THE_MOVIE_DATABASE_API
+        private const val API_KEY = BuildConfig.THE_MOVIE_DATABASE_API
     }
 }

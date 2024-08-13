@@ -60,101 +60,20 @@
                 app:layout_constraintTop_toBottomOf="@+id/movie_title"
                 tools:text="текст\nтекст\nтекст\nтекст\nтекст\nтекст\nтекст\nтекст" />
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/actor1_image"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginStart="@dimen/material_margin_normal"
-                android:layout_marginTop="@dimen/material_margin_large"
-                android:scaleType="centerCrop"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/movie_overview"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.ExtraSmall"
-                tools:src="@drawable/ic_avatar" />
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/actor4_image"
-                android:layout_width="@dimen/credits_size"
-                android:layout_height="@dimen/credits_size"
-                android:layout_marginTop="@dimen/material_margin_large"
-                android:layout_marginEnd="@dimen/material_margin_normal"
-                android:scaleType="centerCrop"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/movie_overview"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.ExtraSmall"
-                tools:src="@drawable/ic_avatar" />
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/actor3_image"
-                android:layout_width="@dimen/credits_size"
-                android:layout_height="@dimen/credits_size"
-                android:layout_marginTop="@dimen/material_margin_large"
-                android:scaleType="centerCrop"
-                app:layout_constraintEnd_toStartOf="@id/actor4_image"
-                app:layout_constraintStart_toEndOf="@id/actor2_image"
-                app:layout_constraintTop_toBottomOf="@+id/movie_overview"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.ExtraSmall"
-                tools:src="@drawable/ic_avatar" />
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/actor2_image"
-                android:layout_width="@dimen/credits_size"
-                android:layout_height="@dimen/credits_size"
-                android:layout_marginTop="@dimen/material_margin_large"
-                android:scaleType="centerCrop"
-                app:layout_constraintEnd_toStartOf="@id/actor3_image"
-                app:layout_constraintStart_toEndOf="@id/actor1_image"
-                app:layout_constraintTop_toBottomOf="@+id/movie_overview"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.ExtraSmall"
-                tools:src="@drawable/ic_avatar" />
-
-            <TextView
-                android:id="@+id/actor1_text"
-                android:layout_width="@dimen/credits_size"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/material_margin_small"
-                android:maxLines="3"
-                android:textAlignment="center"
-                android:textColor="@color/textColorGrey"
-                app:layout_constraintStart_toStartOf="@id/actor1_image"
-                app:layout_constraintTop_toBottomOf="@+id/actor1_image"
-                tools:text="Nекст\nТекст" />
-
-            <TextView
-                android:id="@+id/actor2_text"
-                android:layout_width="@dimen/credits_size"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/material_margin_small"
-                android:maxLines="3"
-                android:textAlignment="center"
-                android:textColor="@color/textColorGrey"
-                app:layout_constraintStart_toStartOf="@id/actor2_image"
-                app:layout_constraintTop_toBottomOf="@+id/actor2_image"
-                tools:text="Nекст\nТекст" />
-
-            <TextView
-                android:id="@+id/actor3_text"
-                android:layout_width="@dimen/credits_size"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/material_margin_small"
-                android:maxLines="3"
-                android:textAlignment="center"
-                android:textColor="@color/textColorGrey"
-                app:layout_constraintStart_toStartOf="@id/actor3_image"
-                app:layout_constraintTop_toBottomOf="@+id/actor3_image"
-                tools:text="Nекст\nТекст" />
-
-            <TextView
-                android:id="@+id/actor4_text"
-                android:layout_width="@dimen/credits_size"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/material_margin_small"
-                android:maxLines="3"
-                android:textAlignment="center"
-                android:textColor="@color/textColorGrey"
-                app:layout_constraintStart_toStartOf="@id/actor4_image"
-                app:layout_constraintTop_toBottomOf="@+id/actor4_image"
-                tools:text="Nекст\nТекст" />
+           <androidx.recyclerview.widget.RecyclerView
+               android:id="@+id/items_container"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal"
+               android:layout_marginTop="@dimen/material_margin_large"
+               android:layout_marginStart="@dimen/material_margin_normal"
+               android:layout_marginEnd="@dimen/material_margin_normal"
+               app:layout_constraintTop_toBottomOf="@id/movie_overview"
+               app:layout_constraintStart_toStartOf="parent"
+               app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+               tools:listitem="@layout/item_cast"
+               tools:itemCount="7"
+               />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

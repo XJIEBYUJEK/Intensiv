@@ -7,10 +7,11 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
+import ru.androidschool.intensiv.BuildConfig
 
 object MovieApiClient {
 
-    private const val BASE_URL = "https://api.themoviedb.org/3/"
+    private const val BASE_URL = BuildConfig.BASE_URL
 
     private val client: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().apply {

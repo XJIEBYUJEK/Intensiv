@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/material_margin_super_small"
+    android:layout_marginLeft="@dimen/material_margin_super_small"
+    android:layout_marginEnd="@dimen/material_margin_super_small"
+    android:layout_marginBottom="@dimen/material_margin_normal"
+    android:orientation="vertical"
+    tools:background="@color/blueDark"
+    tools:ignore="RtlHardcoded">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/cast_image"
+        android:layout_width="@dimen/credits_size"
+        android:layout_height="@dimen/credits_size"
+        android:scaleType="centerCrop"
+        app:strokeColor="@null"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.ExtraSmall"
+        tools:background="@color/white"
+        tools:src="@drawable/ic_avatar" />
+
+    <TextView
+        android:id="@+id/cast_name"
+        android:layout_width="@dimen/credits_size"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/material_margin_small"
+        android:ellipsize="end"
+        android:textColor="@color/textColorGrey"
+        android:maxLines="3"
+        android:textAlignment="center"
+        tools:text="Мир дикого" />
+</LinearLayout>

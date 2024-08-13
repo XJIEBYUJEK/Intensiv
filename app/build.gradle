@@ -26,6 +26,8 @@ android {
 
         buildConfigField 'String', 'THE_MOVIE_DATABASE_API', keystoreProperties['THE_MOVIE_DATABASE_API']
         buildConfigField 'String', 'THE_MOVIE_DATABASE_API_READ_ACCESS', keystoreProperties['THE_MOVIE_DATABASE_API_READ_ACCESS']
+        buildConfigField 'String', 'BASE_URL', '"https://api.themoviedb.org/3/"'
+        buildConfigField 'String', 'IMAGE_URL', '"https://image.tmdb.org/t/p/"'
     }
     buildTypes {
         debug {
@@ -56,8 +58,6 @@ android {
     }
     namespace 'ru.androidschool.intensiv'
 }
-
-
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -95,11 +95,11 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
 
     //Kotlinx.serializtion
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
-    implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$rootProject.ktSerializationJsonVersion"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:$rootProject.ktSerializationConverterVersion"
 
     //Network
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okHttpVersion"
 }

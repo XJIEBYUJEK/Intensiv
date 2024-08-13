@@ -2,6 +2,7 @@ package ru.androidschool.intensiv.data
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import ru.androidschool.intensiv.BuildConfig
 
 @Serializable
 data class Movie(
@@ -36,5 +37,8 @@ data class Movie(
         get() = voteAverage?.div(2)?.toFloat()
     @SerialName("poster_path")
     var posterPath: String? = null
-        get() = "https://image.tmdb.org/t/p/w500$field"
+        get() = "${BuildConfig.IMAGE_URL}$SCALE$field"
+    companion object{
+        const val SCALE = "w500"
+    }
 }
