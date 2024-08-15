@@ -50,11 +50,11 @@ class TvShowsFragment : Fragment(R.layout.tv_shows_fragment) {
             .subscribe({ tvShowsResponse ->
             val tvShows = tvShowsResponse.results
             binding.tvShowRecyclerView.adapter = adapter.apply {
-                addAll(tvShows?.map {
+                addAll(tvShows.map {
                     TvShowItem(it) {}
-                }?.toList() ?: listOf())
+                }.toList())
             }
-            },{ error ->
+            }, { error ->
                 Timber.e(error)
              })
     }

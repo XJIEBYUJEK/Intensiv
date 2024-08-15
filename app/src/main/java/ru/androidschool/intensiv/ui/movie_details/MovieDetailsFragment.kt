@@ -69,9 +69,9 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
             .subscribe({ response ->
                 val actors = response.cast
                 binding.itemsContainer.adapter = adapter.apply {
-                    addAll( actors?.map {
+                    addAll( actors.map {
                         CastItem(it) {}
-                    }?.toList() ?: listOf())
+                    }.toList())
                 }
             }, { error ->
                 Timber.e(error)

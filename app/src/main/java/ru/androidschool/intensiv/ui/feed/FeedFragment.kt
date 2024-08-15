@@ -7,6 +7,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
@@ -21,6 +22,7 @@ import ru.androidschool.intensiv.databinding.FeedHeaderBinding
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.afterTextChanged
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class FeedFragment : Fragment(R.layout.feed_fragment) {
 
@@ -58,12 +60,28 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        searchBinding.searchToolbar.binding.searchEditText.afterTextChanged {
-            Timber.d(it.toString())
-            if (it.toString().length > MIN_LENGTH) {
-                openSearch(it.toString())
+        val searchEditText = searchBinding.searchToolbar.binding.searchEditText
+
+        val searchObservable = Observable.create<String> { e ->
+            searchEditText.afterTextChanged {
+                e.onNext(
+                    it.toString()
+                )
+            }
+            e.setCancellable {
+                searchEditText.setOnTouchListener(null)
+                e.onComplete()
             }
         }
+        searchObservable.debounce(500, TimeUnit.MILLISECONDS)
+            .filter{ it.length > MIN_LENGTH}
+            .map { it.replace(REMOVED_SYMBOL,"") }
+            .subscribe({
+                Timber.i("Search text: $it")
+                //openSearch(it)
+            }, {
+                Timber.e(it)
+            })
 
         val getNowPlaying = MovieApiClient.apiClient.getNowPlaying(API_KEY, ENGLISH)
         val getPopular = MovieApiClient.apiClient.getPopularMovies(API_KEY, ENGLISH)
@@ -74,15 +92,15 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
             .subscribe({ response ->
                 val movies = response.results
                 binding.moviesRecyclerView.adapter = adapter.apply {
-                    addAll(movies?.map {
+                    addAll(movies.map {
                         MovieItem(it) { movie ->
                             openMovieDetails(
                                 movie
                             )
                         }
-                    }?.toList() ?: listOf())
+                    }.toList())
                 }
-            },{ error ->
+            }, { error ->
                 Timber.e(error)
             })
 
@@ -132,6 +150,7 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
 
     companion object {
         const val MIN_LENGTH = 3
+        const val REMOVED_SYMBOL = " "
         const val KEY_ID = "id"
         const val KEY_SEARCH = "search"
         const val ENGLISH = "en-US"
