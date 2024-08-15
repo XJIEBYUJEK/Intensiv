@@ -33,8 +33,8 @@ data class TvShow(
     @SerialName("name")
     val name: String?
 ) {
-    val rating: Float?
-        get() = voteAverage?.div(2)?.toFloat()
+    val rating: Float
+        get() = ratingCalculation(voteAverage)
     @SerialName("poster_path")
     var posterPath: String? = null
         get() = "${BuildConfig.IMAGE_URL}$SCALE$field"

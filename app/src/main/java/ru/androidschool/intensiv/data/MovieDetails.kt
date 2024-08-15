@@ -54,8 +54,8 @@ data class MovieDetails(
     val voteCount: Int?
 
 ) {
-    val rating: Float?
-        get() = voteAverage?.div(2)?.toFloat()
+    val rating: Float
+        get() = ratingCalculation(voteAverage)
     @SerialName("poster_path")
     var posterPath: String? = null
         get() = "${BuildConfig.IMAGE_URL}$SCALE$field"

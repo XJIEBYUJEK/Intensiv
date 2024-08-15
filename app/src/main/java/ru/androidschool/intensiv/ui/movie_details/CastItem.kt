@@ -7,6 +7,7 @@ import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.Cast
 import ru.androidschool.intensiv.data.Movie
 import ru.androidschool.intensiv.databinding.ItemCastBinding
+import ru.androidschool.intensiv.ui.loadUrl
 
 class CastItem(
     private val content: Cast,
@@ -20,10 +21,7 @@ class CastItem(
         view.content.setOnClickListener {
             onClick.invoke(content)
         }
-
-        Picasso.get()
-            .load(content.profilePath)
-            .into(view.castImage)
+        view.castImage.loadUrl(content.profilePath)
     }
 
     override fun initializeViewBinding(view: View) = ItemCastBinding.bind(view)

@@ -6,6 +6,7 @@ import com.xwray.groupie.viewbinding.BindableItem
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.TvShow
 import ru.androidschool.intensiv.databinding.ItemTvShowBinding
+import ru.androidschool.intensiv.ui.loadUrl
 
 class TvShowItem(
     private val content: TvShow,
@@ -16,14 +17,11 @@ class TvShowItem(
 
     override fun bind(view: ItemTvShowBinding, position: Int) {
         view.description.text = content.name
-        view.tvShowRating.rating = content.rating ?: 0.0f
+        view.tvShowRating.rating = content.rating
         view.content.setOnClickListener {
             onClick.invoke(content)
         }
-
-        Picasso.get()
-            .load(content.posterPath)
-            .into(view.imagePreview)
+        view.imagePreview.loadUrl(content.posterPath)
     }
 
     override fun initializeViewBinding(v: View) = ItemTvShowBinding.bind(v)

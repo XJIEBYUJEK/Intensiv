@@ -18,6 +18,7 @@ import ru.androidschool.intensiv.data.MovieDetails
 import ru.androidschool.intensiv.databinding.MovieDetailsFragmentBinding
 import ru.androidschool.intensiv.databinding.MovieDetailsHeaderBinding
 import ru.androidschool.intensiv.network.MovieApiClient
+import ru.androidschool.intensiv.ui.loadUrl
 import timber.log.Timber
 
 class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
@@ -54,9 +55,7 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
                 binding.movieTitle.text = movieDetails?.title
                 binding.rating.rating = movieDetails?.rating ?: 0.0f
                 binding.movieOverview.text = movieDetails?.overview
-                Picasso.get()
-                    .load(movieDetails?.posterPath)
-                    .into(posterBinding.posterImage)
+                posterBinding.posterImage.loadUrl(movieDetails?.posterPath)
             }
 
             override fun onFailure(call: Call<MovieDetails>, t: Throwable) {
