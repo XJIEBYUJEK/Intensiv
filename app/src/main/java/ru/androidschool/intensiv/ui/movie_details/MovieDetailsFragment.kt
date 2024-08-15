@@ -15,31 +15,27 @@ import ru.androidschool.intensiv.BuildConfig
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.CreditsResponse
 import ru.androidschool.intensiv.data.MovieDetails
+import ru.androidschool.intensiv.databinding.FeedHeaderBinding
+import ru.androidschool.intensiv.databinding.FragmentSearchBinding
 import ru.androidschool.intensiv.databinding.MovieDetailsFragmentBinding
 import ru.androidschool.intensiv.databinding.MovieDetailsHeaderBinding
 import ru.androidschool.intensiv.network.MovieApiClient
+import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.loadUrl
 import timber.log.Timber
 
-class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
-    private var _binding: MovieDetailsFragmentBinding? = null
+class MovieDetailsFragment : BaseFragment<MovieDetailsFragmentBinding>() {
     private var _posterBinding: MovieDetailsHeaderBinding? = null
 
-    private val binding get() = _binding!!
     private val posterBinding get() = _posterBinding!!
 
     private val adapter by lazy {
         GroupAdapter<GroupieViewHolder>()
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = MovieDetailsFragmentBinding.inflate(inflater, container, false)
+    override fun createViewBinding(inflater: LayoutInflater,container: ViewGroup?): MovieDetailsFragmentBinding {
         _posterBinding = MovieDetailsHeaderBinding.bind(binding.root)
-        return binding.root
+        return MovieDetailsFragmentBinding.inflate(inflater, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,8 +70,6 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
                         CastItem(it) {}
                     }?.toList() ?: listOf())
                 }
-
-
             }
 
             override fun onFailure(call: Call<CreditsResponse>, t: Throwable) {
@@ -86,7 +80,6 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
         _posterBinding = null
     }
 
