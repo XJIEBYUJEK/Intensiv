@@ -2,7 +2,6 @@ package ru.androidschool.intensiv.ui.feed
 
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
@@ -10,32 +9,35 @@ import com.xwray.groupie.GroupieViewHolder
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import ru.androidschool.intensiv.BuildConfig
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.Movie
-import ru.androidschool.intensiv.data.MoviesResponse
 import ru.androidschool.intensiv.databinding.FeedFragmentBinding
 import ru.androidschool.intensiv.databinding.FeedHeaderBinding
 import ru.androidschool.intensiv.network.MovieApiClient
+import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.afterTextChanged
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class FeedFragment : Fragment(R.layout.feed_fragment) {
+class FeedFragment : BaseFragment<FeedFragmentBinding>() {
 
     private var _binding: FeedFragmentBinding? = null
     private var _searchBinding: FeedHeaderBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
     private val searchBinding get() = _searchBinding!!
 
     private val adapter by lazy {
         GroupAdapter<GroupieViewHolder>()
+    }
+
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FeedFragmentBinding {
+        _binding = FeedFragmentBinding.inflate(inflater, container, false)
+        _searchBinding = FeedHeaderBinding.bind(_binding!!.root)
+        return _binding!!
     }
 
     private val options = navOptions {
@@ -45,16 +47,6 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
             popEnter = R.anim.slide_in_left
             popExit = R.anim.slide_out_right
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FeedFragmentBinding.inflate(inflater, container, false)
-        _searchBinding = FeedHeaderBinding.bind(binding.root)
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,8 +66,8 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
             }
         }
         searchObservable.debounce(500, TimeUnit.MILLISECONDS)
-            .filter{ it.length > MIN_LENGTH}
-            .map { it.replace(REMOVED_SYMBOL,"") }
+            .filter { it.length > MIN_LENGTH }
+            .map { it.replace(REMOVED_SYMBOL, "") }
             .subscribe({
                 Timber.i("Search text: $it")
                 //openSearch(it)

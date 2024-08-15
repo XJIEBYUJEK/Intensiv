@@ -4,44 +4,35 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import ru.androidschool.intensiv.BuildConfig
-import ru.androidschool.intensiv.R
-import ru.androidschool.intensiv.data.CreditsResponse
-import ru.androidschool.intensiv.data.MovieDetails
 import ru.androidschool.intensiv.databinding.MovieDetailsFragmentBinding
 import ru.androidschool.intensiv.databinding.MovieDetailsHeaderBinding
 import ru.androidschool.intensiv.network.MovieApiClient
+import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.loadUrl
 import timber.log.Timber
 
-class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
+class MovieDetailsFragment : BaseFragment<MovieDetailsFragmentBinding>() {
     private var _binding: MovieDetailsFragmentBinding? = null
     private var _posterBinding: MovieDetailsHeaderBinding? = null
 
-    private val binding get() = _binding!!
     private val posterBinding get() = _posterBinding!!
 
     private val adapter by lazy {
         GroupAdapter<GroupieViewHolder>()
     }
 
-    override fun onCreateView(
+    override fun createViewBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+        container: ViewGroup?
+    ): MovieDetailsFragmentBinding {
         _binding = MovieDetailsFragmentBinding.inflate(inflater, container, false)
-        _posterBinding = MovieDetailsHeaderBinding.bind(binding.root)
-        return binding.root
+        _posterBinding = MovieDetailsHeaderBinding.bind(_binding!!.root)
+        return _binding!!
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,7 +60,7 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
             .subscribe({ response ->
                 val actors = response.cast
                 binding.itemsContainer.adapter = adapter.apply {
-                    addAll( actors.map {
+                    addAll(actors.map {
                         CastItem(it) {}
                     }.toList())
                 }
