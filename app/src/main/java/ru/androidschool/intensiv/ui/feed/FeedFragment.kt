@@ -7,6 +7,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -67,12 +69,10 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         val getPopular = MovieApiClient.apiClient.getPopularMovies(API_KEY, ENGLISH)
         val getUpcoming = MovieApiClient.apiClient.getUpcomingMovies(API_KEY, ENGLISH)
 
-        getNowPlaying.enqueue(object : Callback<MoviesResponse> {
-            override fun onResponse(
-                call: Call<MoviesResponse>,
-                response: Response<MoviesResponse>
-            ) {
-                val movies = response.body()?.results
+        getNowPlaying.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ response ->
+                val movies = response.results
                 binding.moviesRecyclerView.adapter = adapter.apply {
                     addAll(movies?.map {
                         MovieItem(it) { movie ->
@@ -82,40 +82,25 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
                         }
                     }?.toList() ?: listOf())
                 }
-            }
+            },{ error ->
+                Timber.e(error)
+            })
 
-            override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
-                Timber.e(t.toString())
-            }
-        })
-
-        getPopular.enqueue(object : Callback<MoviesResponse> {
-            override fun onResponse(
-                call: Call<MoviesResponse>,
-                response: Response<MoviesResponse>
-            ) {
+        getPopular.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
                 Timber.i("Success")
-                // TODO
-            }
+            }, { error ->
+                Timber.e(error)
+            })
 
-            override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
-                Timber.e(t.toString())
-            }
-        })
-
-        getUpcoming.enqueue(object : Callback<MoviesResponse> {
-            override fun onResponse(
-                call: Call<MoviesResponse>,
-                response: Response<MoviesResponse>
-            ) {
+        getUpcoming.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
                 Timber.i("Success")
-                // TODO
-            }
-
-            override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
-                Timber.e(t.toString())
-            }
-        })
+            }, { error ->
+                Timber.e(error)
+            })
     }
 
     private fun openMovieDetails(movie: Movie) {

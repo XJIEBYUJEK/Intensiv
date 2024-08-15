@@ -1,12 +1,16 @@
 package ru.androidschool.intensiv.ui.tvshows
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,23 +45,18 @@ class TvShowsFragment : Fragment(R.layout.tv_shows_fragment) {
 
         val getPopularTvShows = MovieApiClient.apiClient.getPopularTvShows(API_KEY)
 
-        getPopularTvShows.enqueue(object : Callback<TvShowsResponse> {
-            override fun onResponse(
-                call: Call<TvShowsResponse>,
-                response: Response<TvShowsResponse>
-            ) {
-                val tvShows = response.body()?.results
-                binding.tvShowRecyclerView.adapter = adapter.apply {
-                    addAll(tvShows?.map {
-                        TvShowItem(it) {}
-                    }?.toList() ?: listOf())
-                }
+        getPopularTvShows.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ tvShowsResponse ->
+            val tvShows = tvShowsResponse.results
+            binding.tvShowRecyclerView.adapter = adapter.apply {
+                addAll(tvShows?.map {
+                    TvShowItem(it) {}
+                }?.toList() ?: listOf())
             }
-
-            override fun onFailure(call: Call<TvShowsResponse>, t: Throwable) {
-                Timber.e(t.toString())
-            }
-        })
+            },{ error ->
+                Timber.e(error)
+             })
     }
 
     override fun onDestroyView() {

@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,39 +51,31 @@ class MovieDetailsFragment : Fragment(R.layout.movie_details_fragment) {
         val getMovieDetails = MovieApiClient.apiClient.getMovieDetails(movieId, API_KEY, ENGLISH)
         val getMovieCredits = MovieApiClient.apiClient.getMovieCredits(movieId, API_KEY, ENGLISH)
 
-        getMovieDetails.enqueue(object : Callback<MovieDetails> {
-            override fun onResponse(call: Call<MovieDetails>, response: Response<MovieDetails>) {
-                val movieDetails = response.body()
-                binding.movieTitle.text = movieDetails?.title
-                binding.rating.rating = movieDetails?.rating ?: 0.0f
-                binding.movieOverview.text = movieDetails?.overview
-                posterBinding.posterImage.loadUrl(movieDetails?.posterPath)
-            }
 
-            override fun onFailure(call: Call<MovieDetails>, t: Throwable) {
-                Timber.e(t.toString())
-            }
-        })
+        getMovieDetails.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ movieDetails ->
+                binding.movieTitle.text = movieDetails.title
+                binding.rating.rating = movieDetails.rating
+                binding.movieOverview.text = movieDetails.overview
+                posterBinding.posterImage.loadUrl(movieDetails.posterPath)
+            }, { error ->
+                Timber.e(error)
+            })
 
-        getMovieCredits.enqueue(object : Callback<CreditsResponse> {
-            override fun onResponse(
-                call: Call<CreditsResponse>,
-                response: Response<CreditsResponse>
-            ) {
-                val actors = response.body()?.cast
+
+        getMovieCredits.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ response ->
+                val actors = response.cast
                 binding.itemsContainer.adapter = adapter.apply {
                     addAll( actors?.map {
                         CastItem(it) {}
                     }?.toList() ?: listOf())
                 }
-
-
-            }
-
-            override fun onFailure(call: Call<CreditsResponse>, t: Throwable) {
-                Timber.e(t.toString())
-            }
-        })
+            }, { error ->
+                Timber.e(error)
+            })
     }
 
     override fun onDestroyView() {
