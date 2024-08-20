@@ -6,13 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import ru.androidschool.intensiv.BuildConfig
 import ru.androidschool.intensiv.databinding.MovieDetailsFragmentBinding
 import ru.androidschool.intensiv.databinding.MovieDetailsHeaderBinding
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.BaseFragment
+import ru.androidschool.intensiv.ui.applySchedulers
 import ru.androidschool.intensiv.ui.loadUrl
 import timber.log.Timber
 
@@ -43,8 +42,7 @@ class MovieDetailsFragment : BaseFragment<MovieDetailsFragmentBinding>() {
         val getMovieCredits = MovieApiClient.apiClient.getMovieCredits(movieId, API_KEY, ENGLISH)
 
 
-        getMovieDetails.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        compositeDisposable.add(getMovieDetails.applySchedulers()
             .subscribe({ movieDetails ->
                 binding.movieTitle.text = movieDetails.title
                 binding.rating.rating = movieDetails.rating
@@ -52,11 +50,10 @@ class MovieDetailsFragment : BaseFragment<MovieDetailsFragmentBinding>() {
                 posterBinding.posterImage.loadUrl(movieDetails.posterPath)
             }, { error ->
                 Timber.e(error)
-            })
+            }))
 
 
-        getMovieCredits.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        compositeDisposable.add(getMovieCredits.applySchedulers()
             .subscribe({ response ->
                 val actors = response.cast
                 binding.itemsContainer.adapter = adapter.apply {
@@ -66,7 +63,7 @@ class MovieDetailsFragment : BaseFragment<MovieDetailsFragmentBinding>() {
                 }
             }, { error ->
                 Timber.e(error)
-            })
+            }))
     }
 
     override fun onDestroyView() {

@@ -12,6 +12,7 @@ import ru.androidschool.intensiv.BuildConfig
 import ru.androidschool.intensiv.databinding.TvShowsFragmentBinding
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.BaseFragment
+import ru.androidschool.intensiv.ui.applySchedulers
 import timber.log.Timber
 
 class TvShowsFragment : BaseFragment<TvShowsFragmentBinding>() {
@@ -28,8 +29,7 @@ class TvShowsFragment : BaseFragment<TvShowsFragmentBinding>() {
 
         val getPopularTvShows = MovieApiClient.apiClient.getPopularTvShows(API_KEY)
 
-        getPopularTvShows.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        compositeDisposable.add(getPopularTvShows.applySchedulers()
             .subscribe({ tvShowsResponse ->
                 val tvShows = tvShowsResponse.results
                 binding.tvShowRecyclerView.adapter = adapter.apply {
@@ -39,7 +39,7 @@ class TvShowsFragment : BaseFragment<TvShowsFragmentBinding>() {
                 }
             }, { error ->
                 Timber.e(error)
-            })
+            }))
     }
 
     companion object {

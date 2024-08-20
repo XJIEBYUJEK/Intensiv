@@ -17,6 +17,7 @@ import ru.androidschool.intensiv.databinding.FeedHeaderBinding
 import ru.androidschool.intensiv.network.MovieApiClient
 import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.afterTextChanged
+import ru.androidschool.intensiv.ui.applySchedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -52,35 +53,19 @@ class FeedFragment : BaseFragment<FeedFragmentBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val searchEditText = searchBinding.searchToolbar.binding.searchEditText
-
-        val searchObservable = Observable.create<String> { e ->
-            searchEditText.afterTextChanged {
-                e.onNext(
-                    it.toString()
-                )
-            }
-            e.setCancellable {
-                searchEditText.setOnTouchListener(null)
-                e.onComplete()
-            }
-        }
-        searchObservable.debounce(500, TimeUnit.MILLISECONDS)
-            .filter { it.length > MIN_LENGTH }
-            .map { it.replace(REMOVED_SYMBOL, "") }
-            .subscribe({
+        val searchObservable = searchBinding.searchToolbar.getSearchObservableWithFilter()
+        compositeDisposable.add(searchObservable.subscribe({
                 Timber.i("Search text: $it")
                 //openSearch(it)
             }, {
                 Timber.e(it)
-            })
+            }))
 
         val getNowPlaying = MovieApiClient.apiClient.getNowPlaying(API_KEY, ENGLISH)
         val getPopular = MovieApiClient.apiClient.getPopularMovies(API_KEY, ENGLISH)
         val getUpcoming = MovieApiClient.apiClient.getUpcomingMovies(API_KEY, ENGLISH)
 
-        getNowPlaying.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        compositeDisposable.add(getNowPlaying.applySchedulers()
             .subscribe({ response ->
                 val movies = response.results
                 binding.moviesRecyclerView.adapter = adapter.apply {
@@ -94,23 +79,21 @@ class FeedFragment : BaseFragment<FeedFragmentBinding>() {
                 }
             }, { error ->
                 Timber.e(error)
-            })
+            }))
 
-        getPopular.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        compositeDisposable.add(getPopular.applySchedulers()
             .subscribe({
                 Timber.i("Success")
             }, { error ->
                 Timber.e(error)
-            })
+            }))
 
-        getUpcoming.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        compositeDisposable.add(getUpcoming.applySchedulers()
             .subscribe({
                 Timber.i("Success")
             }, { error ->
                 Timber.e(error)
-            })
+            }))
     }
 
     private fun openMovieDetails(movie: Movie) {
@@ -142,7 +125,6 @@ class FeedFragment : BaseFragment<FeedFragmentBinding>() {
 
     companion object {
         const val MIN_LENGTH = 3
-        const val REMOVED_SYMBOL = " "
         const val KEY_ID = "id"
         const val KEY_SEARCH = "search"
         const val ENGLISH = "en-US"

@@ -9,25 +9,26 @@ import ru.androidschool.intensiv.data.CreditsResponse
 import ru.androidschool.intensiv.data.MovieDetails
 import ru.androidschool.intensiv.data.MoviesResponse
 import ru.androidschool.intensiv.data.TvShowsResponse
+import ru.androidschool.intensiv.ui.getLanguage
 import java.util.Locale
 
 interface MovieApiInterface {
 
     @GET("movie/now_playing")
-    fun getNowPlaying(@Query("api_key") apiKey: String, @Query("language") language: String = Locale.getDefault().toLanguageTag()): Single<MoviesResponse>
+    fun getNowPlaying(@Query("api_key") apiKey: String, @Query("language") language: String = getLanguage()): Single<MoviesResponse>
 
     @GET("discover/tv")
-    fun getPopularTvShows(@Query("api_key") apiKey: String, @Query("language") language: String = Locale.getDefault().toLanguageTag()): Single<TvShowsResponse>
+    fun getPopularTvShows(@Query("api_key") apiKey: String, @Query("language") language: String = getLanguage()): Single<TvShowsResponse>
 
     @GET("movie/upcoming")
-    fun getUpcomingMovies(@Query("api_key") apiKey: String, @Query("language") language: String = Locale.getDefault().toLanguageTag()): Single<MoviesResponse>
+    fun getUpcomingMovies(@Query("api_key") apiKey: String, @Query("language") language: String = getLanguage()): Single<MoviesResponse>
 
     @GET("movie/popular")
-    fun getPopularMovies(@Query("api_key") apiKey: String, @Query("language") language: String = Locale.getDefault().toLanguageTag()): Single<MoviesResponse>
+    fun getPopularMovies(@Query("api_key") apiKey: String, @Query("language") language: String = getLanguage()): Single<MoviesResponse>
 
     @GET("movie/{id}")
-    fun getMovieDetails(@Path("id") id: Int, @Query("api_key") apiKey: String, @Query("language") language: String = Locale.getDefault().toLanguageTag()): Single<MovieDetails>
+    fun getMovieDetails(@Path("id") id: Int, @Query("api_key") apiKey: String, @Query("language") language: String = getLanguage()): Single<MovieDetails>
 
     @GET("movie/{id}/credits")
-    fun getMovieCredits(@Path("id") id: Int, @Query("api_key") apiKey: String, @Query("language") language: String = Locale.getDefault().toLanguageTag()): Single<CreditsResponse>
+    fun getMovieCredits(@Path("id") id: Int, @Query("api_key") apiKey: String, @Query("language") language: String = getLanguage()): Single<CreditsResponse>
 }
