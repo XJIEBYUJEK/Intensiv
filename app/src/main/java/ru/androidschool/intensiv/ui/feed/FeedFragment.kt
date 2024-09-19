@@ -7,11 +7,13 @@ import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.androidschool.intensiv.BuildConfig
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.Movie
+import ru.androidschool.intensiv.data.MoviesResponse
 import ru.androidschool.intensiv.databinding.FeedFragmentBinding
 import ru.androidschool.intensiv.databinding.FeedHeaderBinding
 import ru.androidschool.intensiv.network.MovieApiClient
@@ -52,22 +54,21 @@ class FeedFragment : BaseFragment<FeedFragmentBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupSearchObserver()
+        getMovies()
+    }
 
-        val searchObservable = searchBinding.searchToolbar.getSearchObservableWithFilter()
-        compositeDisposable.add(searchObservable.subscribe({
-                Timber.i("Search text: $it")
-                //openSearch(it)
-            }, {
-                Timber.e(it)
-            }))
-
+    private fun getMovies(){
         val getNowPlaying = MovieApiClient.apiClient.getNowPlaying(API_KEY, ENGLISH)
         val getPopular = MovieApiClient.apiClient.getPopularMovies(API_KEY, ENGLISH)
         val getUpcoming = MovieApiClient.apiClient.getUpcomingMovies(API_KEY, ENGLISH)
 
-        compositeDisposable.add(getNowPlaying.applySchedulers()
-            .subscribe({ response ->
-                val movies = response.results
+        compositeDisposable.add(
+            Single.zip(getNowPlaying,getPopular,getUpcoming){
+                nowPlaying, popular, upcoming ->
+                listOf( nowPlaying, popular, upcoming)
+            }.applySchedulers().subscribe({ response ->
+                val movies = response[0].results
                 binding.moviesRecyclerView.adapter = adapter.apply {
                     addAll(movies.map {
                         MovieItem(it) { movie ->
@@ -79,21 +80,18 @@ class FeedFragment : BaseFragment<FeedFragmentBinding>() {
                 }
             }, { error ->
                 Timber.e(error)
-            }))
+            })
+        )
+    }
 
-        compositeDisposable.add(getPopular.applySchedulers()
-            .subscribe({
-                Timber.i("Success")
-            }, { error ->
-                Timber.e(error)
-            }))
-
-        compositeDisposable.add(getUpcoming.applySchedulers()
-            .subscribe({
-                Timber.i("Success")
-            }, { error ->
-                Timber.e(error)
-            }))
+    private fun setupSearchObserver(){
+        val searchObservable = searchBinding.searchToolbar.getSearchObservableWithFilter()
+        compositeDisposable.add(searchObservable.subscribe({
+            Timber.i("Search text: $it")
+            //openSearch(it)
+        }, {
+            Timber.e(it)
+        }))
     }
 
     private fun openMovieDetails(movie: Movie) {
