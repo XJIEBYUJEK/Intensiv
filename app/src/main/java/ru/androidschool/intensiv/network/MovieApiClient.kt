@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import ru.androidschool.intensiv.BuildConfig
 
 object MovieApiClient {
@@ -33,6 +34,7 @@ object MovieApiClient {
             .baseUrl(BASE_URL)
             .client(client)
             .addConverterFactory(converterFactory)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
 
         return@lazy retrofit.create(MovieApiInterface::class.java)

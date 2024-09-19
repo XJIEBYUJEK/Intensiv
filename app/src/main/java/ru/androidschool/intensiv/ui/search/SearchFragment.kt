@@ -4,30 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.databinding.FeedHeaderBinding
 import ru.androidschool.intensiv.databinding.FragmentSearchBinding
+import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.feed.FeedFragment.Companion.KEY_SEARCH
 
-class SearchFragment : Fragment(R.layout.fragment_search) {
+class SearchFragment : BaseFragment<FragmentSearchBinding>() {
 
     private var _binding: FragmentSearchBinding? = null
     private var _searchBinding: FeedHeaderBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+
     private val searchBinding get() = _searchBinding!!
 
-    override fun onCreateView(
+    override fun createViewBinding(
         inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+        container: ViewGroup?
+    ): FragmentSearchBinding {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-        _searchBinding = FeedHeaderBinding.bind(binding.root)
-        return binding.root
+        _searchBinding = FeedHeaderBinding.bind(_binding!!.root)
+        return _binding!!
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

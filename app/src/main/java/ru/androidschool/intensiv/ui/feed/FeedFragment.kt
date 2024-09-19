@@ -2,36 +2,43 @@ package ru.androidschool.intensiv.ui.feed
 
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.GroupieViewHolder
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import ru.androidschool.intensiv.BuildConfig
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.data.Movie
-import ru.androidschool.intensiv.data.MoviesResponse
 import ru.androidschool.intensiv.databinding.FeedFragmentBinding
 import ru.androidschool.intensiv.databinding.FeedHeaderBinding
 import ru.androidschool.intensiv.network.MovieApiClient
+import ru.androidschool.intensiv.ui.BaseFragment
 import ru.androidschool.intensiv.ui.afterTextChanged
+import ru.androidschool.intensiv.ui.applySchedulers
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
-class FeedFragment : Fragment(R.layout.feed_fragment) {
+class FeedFragment : BaseFragment<FeedFragmentBinding>() {
 
     private var _binding: FeedFragmentBinding? = null
     private var _searchBinding: FeedHeaderBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
     private val searchBinding get() = _searchBinding!!
 
     private val adapter by lazy {
         GroupAdapter<GroupieViewHolder>()
+    }
+
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FeedFragmentBinding {
+        _binding = FeedFragmentBinding.inflate(inflater, container, false)
+        _searchBinding = FeedHeaderBinding.bind(_binding!!.root)
+        return _binding!!
     }
 
     private val options = navOptions {
@@ -43,79 +50,50 @@ class FeedFragment : Fragment(R.layout.feed_fragment) {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FeedFragmentBinding.inflate(inflater, container, false)
-        _searchBinding = FeedHeaderBinding.bind(binding.root)
-        return binding.root
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        searchBinding.searchToolbar.binding.searchEditText.afterTextChanged {
-            Timber.d(it.toString())
-            if (it.toString().length > MIN_LENGTH) {
-                openSearch(it.toString())
-            }
-        }
+        val searchObservable = searchBinding.searchToolbar.getSearchObservableWithFilter()
+        compositeDisposable.add(searchObservable.subscribe({
+                Timber.i("Search text: $it")
+                //openSearch(it)
+            }, {
+                Timber.e(it)
+            }))
 
         val getNowPlaying = MovieApiClient.apiClient.getNowPlaying(API_KEY, ENGLISH)
         val getPopular = MovieApiClient.apiClient.getPopularMovies(API_KEY, ENGLISH)
         val getUpcoming = MovieApiClient.apiClient.getUpcomingMovies(API_KEY, ENGLISH)
 
-        getNowPlaying.enqueue(object : Callback<MoviesResponse> {
-            override fun onResponse(
-                call: Call<MoviesResponse>,
-                response: Response<MoviesResponse>
-            ) {
-                val movies = response.body()?.results
+        compositeDisposable.add(getNowPlaying.applySchedulers()
+            .subscribe({ response ->
+                val movies = response.results
                 binding.moviesRecyclerView.adapter = adapter.apply {
-                    addAll(movies?.map {
+                    addAll(movies.map {
                         MovieItem(it) { movie ->
                             openMovieDetails(
                                 movie
                             )
                         }
-                    }?.toList() ?: listOf())
+                    }.toList())
                 }
-            }
+            }, { error ->
+                Timber.e(error)
+            }))
 
-            override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
-                Timber.e(t.toString())
-            }
-        })
-
-        getPopular.enqueue(object : Callback<MoviesResponse> {
-            override fun onResponse(
-                call: Call<MoviesResponse>,
-                response: Response<MoviesResponse>
-            ) {
+        compositeDisposable.add(getPopular.applySchedulers()
+            .subscribe({
                 Timber.i("Success")
-                // TODO
-            }
+            }, { error ->
+                Timber.e(error)
+            }))
 
-            override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
-                Timber.e(t.toString())
-            }
-        })
-
-        getUpcoming.enqueue(object : Callback<MoviesResponse> {
-            override fun onResponse(
-                call: Call<MoviesResponse>,
-                response: Response<MoviesResponse>
-            ) {
+        compositeDisposable.add(getUpcoming.applySchedulers()
+            .subscribe({
                 Timber.i("Success")
-                // TODO
-            }
-
-            override fun onFailure(call: Call<MoviesResponse>, t: Throwable) {
-                Timber.e(t.toString())
-            }
-        })
+            }, { error ->
+                Timber.e(error)
+            }))
     }
 
     private fun openMovieDetails(movie: Movie) {

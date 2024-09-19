@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.squareup.picasso.Picasso
@@ -20,13 +19,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     private lateinit var profileTabLayoutTitles: Array<String>
 
-    override fun createViewBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ) = FragmentProfileBinding.inflate(inflater, container, false)
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    override fun createViewBinding(inflater: LayoutInflater, container: ViewGroup?) =
+        FragmentProfileBinding.inflate(inflater, container, false)
 
     private var profilePageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {

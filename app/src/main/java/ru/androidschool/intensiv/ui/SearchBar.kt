@@ -6,8 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
+import io.reactivex.Observable
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.databinding.SearchToolbarBinding
+import ru.androidschool.intensiv.ui.feed.FeedFragment.Companion.MIN_LENGTH
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class SearchBar @JvmOverloads constructor(
     context: Context,
@@ -49,6 +53,7 @@ class SearchBar @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+
         binding.searchEditText.afterTextChanged { text ->
             if (!text.isNullOrEmpty() && !binding.deleteTextButton.isVisible) {
                 binding.deleteTextButton.visibility = View.VISIBLE
@@ -58,4 +63,19 @@ class SearchBar @JvmOverloads constructor(
             }
         }
     }
+
+    fun getSearchObservableWithFilter(): Observable<String> = Observable.create<String> { e ->
+        binding.searchEditText.afterTextChanged {
+            e.onNext(
+                it.toString()
+            )
+        }
+        e.setCancellable {
+            binding.searchEditText.setOnTouchListener(null)
+            e.onComplete()
+        }
+    }.debounce(500, TimeUnit.MILLISECONDS)
+        .filter { it.length > MIN_LENGTH }
+        .map { it.filter {filtered -> !filtered.isWhitespace() } }
+
 }
