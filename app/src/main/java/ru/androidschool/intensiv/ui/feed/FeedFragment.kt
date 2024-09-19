@@ -64,10 +64,14 @@ class FeedFragment : BaseFragment<FeedFragmentBinding>() {
         val getUpcoming = MovieApiClient.apiClient.getUpcomingMovies(API_KEY, ENGLISH)
 
         compositeDisposable.add(
-            Single.zip(getNowPlaying,getPopular,getUpcoming){
-                nowPlaying, popular, upcoming ->
-                listOf( nowPlaying, popular, upcoming)
-            }.applySchedulers().subscribe({ response ->
+            Single.zip(
+                getNowPlaying,
+                getPopular,
+                getUpcoming
+            ){ nowPlaying, popular, upcoming -> listOf( nowPlaying, popular, upcoming) }
+                .applySchedulers()
+                .showProgressBar()
+                .subscribe({ response ->
                 val movies = response[0].results
                 binding.moviesRecyclerView.adapter = adapter.apply {
                     addAll(movies.map {
