@@ -7,20 +7,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import ru.androidschool.intensiv.R
 import ru.androidschool.intensiv.databinding.FragmentProfileBinding
-import ru.androidschool.intensiv.ui.BaseFragment
 
-class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
+class ProfileFragment : Fragment() {
 
     private lateinit var profileTabLayoutTitles: Array<String>
 
-    override fun createViewBinding(inflater: LayoutInflater, container: ViewGroup?) =
-        FragmentProfileBinding.inflate(inflater, container, false)
+    private var _binding: FragmentProfileBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     private var profilePageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
@@ -30,6 +33,15 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,5 +78,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
             tab.text = spannableStringTitle
         }.attach()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

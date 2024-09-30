@@ -30,6 +30,7 @@ class TvShowsFragment : BaseFragment<TvShowsFragmentBinding>() {
         val getPopularTvShows = MovieApiClient.apiClient.getPopularTvShows(API_KEY)
 
         compositeDisposable.add(getPopularTvShows.applySchedulers()
+            .showProgressBar()
             .subscribe({ tvShowsResponse ->
                 val tvShows = tvShowsResponse.results
                 binding.tvShowRecyclerView.adapter = adapter.apply {
